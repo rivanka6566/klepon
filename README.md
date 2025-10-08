@@ -28,7 +28,3 @@ Sistem ini bertujuan untuk:
 - **Database:** MySQL (phpMyAdmin via XAMPP)
 - **Frontend:** HTML, CSS (Bootstrap 5), JavaScript
 - **Server Lokal:** XAMPP Apache
-
----
-
-## 📂 Struktur Folder
