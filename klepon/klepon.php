@@ -2,7 +2,7 @@
 session_start();
 include '../db/koneksi.php';
 if (!isset($_SESSION['username'])) {
-    header("Location: login.php");
+    header("Location: ../login.php");
     exit;
 }
 
@@ -11,33 +11,95 @@ $data = mysqli_query($conn, "SELECT * FROM form_data ORDER BY id DESC");
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Monitoring SPJ Klepon</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
     <style>
         body {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #a8db74 0%, #7ed957 50%, #38b000 100%);
-            background-attachment: fixed;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f6f9;
         }
-        .table th, .table td { vertical-align: middle; }
-        .btn-secondary { border: none; }
-        .btn-success { background: #5eb639; border: none; color: #fff; }
-        .btn-success:hover { background: #38b000; color: #fff; }
-        .btn-warning { color: #000; }
-        .btn-danger { color: #fff; }
-        .card, .table-responsive { background: rgba(255,255,255,0.95); border-radius: 18px; }
-        h3 { color: #2f8f00; font-weight: bold; letter-spacing: 1px; }
-        input#search { border-radius: 12px; }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 240px;
+            height: 100vh;
+            background-color: #1e1f26;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .sidebar .brand {
+            font-size: 20px;
+            font-weight: 600;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+        }
+        .sidebar .menu {
+            flex: 1;
+            padding: 15px 0;
+        }
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            color: #cfd3dc;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        .sidebar a:hover, .sidebar a.active {
+            background-color: #343a40;
+            color: #fff;
+        }
+        .sidebar a i {
+            font-size: 18px;
+        }
+        .logout {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding: 15px 20px;
+        }
+        .logout a {
+            color: #ff6b6b;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Main content */
+        .main-content {
+            margin-left: 240px;
+            padding: 30px;
+        }
+
+        /* Tabel */
         .table-responsive {
-            background: rgba(255,255,255,0.95);
-            border-radius: 18px;
-            overflow: hidden;
-            padding: 0;
+            background: none;
+            border-radius: 0; /* sudut tajam */
+            box-shadow: none;
         }
         .table {
-            margin-bottom: 0;
+            background-color: white;
+            border-radius: 0; /* sudut tajam */
+            overflow: hidden;
+        }
+        th, td {
+            vertical-align: middle;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
         }
         a.file-link {
             color: #198754;
@@ -51,20 +113,43 @@ $data = mysqli_query($conn, "SELECT * FROM form_data ORDER BY id DESC");
 </head>
 <body>
 
-<div class="container mt-4">
+<!-- Sidebar -->
+<div class="sidebar">
+    <div>
+        <div class="brand">
+            <img src="../uploads/kle.png" alt="Logo SI-KLEPON" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 8px;">
+            SI-KLEPON
+        </div>
+        <div class="menu">
+            <a href="../menu.php"><i class="bi bi-house-door"></i> Dashboard</a>
+            <a href="klepon.php" class="active"><i class="bi bi-folder2-open"></i> Monitoring SPJ</a>
+            <a href="../anggaran/anggaran.php"><i class="bi bi-cash-coin"></i> Anggaran</a>
+            <a href="../pengaturan.php" style="margin-top: 20px; border-top: 1px solid white; padding-top: 10px;">
+                <i class="bi bi-gear"></i> Pengaturan
+            </a>
+        </div>
+    </div>
+    <div class="logout">
+        <span class="d-block mb-2">👋 Halo, <?= $_SESSION['nama']; ?> (<?= $_SESSION['role']; ?>)</span>
+        <a href="../logout.php"><i class="bi bi-box-arrow-right"></i> Logout</a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
     <h3 class="mb-3 text-black">Monitoring SPJ Klepon</h3>
 
-    <?php if ($role == 'admin_utama' || $role == 'user'): ?>
+    <?php if ($role == 'subbagian_umum' || $role == 'user'): ?>
         <div class="mb-3 d-flex gap-2">
             <a href="../menu.php" class="btn btn-secondary">Kembali ke Dashboard</a>
-            <a href="klepon_form.php" class="btn btn-success">Buat Baru</a>
+            <a href="../klepon/klepon_form.php" class="btn btn-success">Buat Baru</a>
         </div>
     <?php endif; ?>
 
     <input type="text" id="search" class="form-control mb-3" placeholder="Cari Nama SPJ..." onkeyup="filterTable()">
 
-    <div class="table-responsive shadow">
-        <table class="table table-bordered table-striped align-middle" id="spjTable">
+    <div class="table-responsive">
+        <table class="table table-bordered align-middle" id="spjTable">
             <thead class="table-dark text-center">
                 <tr>
                     <th>No</th>
@@ -119,7 +204,6 @@ $data = mysqli_query($conn, "SELECT * FROM form_data ORDER BY id DESC");
                         <td><?= $d['ppspm_tanggal'] ?: '-'; ?></td>
                         <td><?= $d['ppspm_keterangan'] ?: '-'; ?></td>
                         <td><?= $d['proses_terakhir'] ?: '-'; ?></td>
-
                         <td class="text-center">
                             <a href="edit_monitoring.php?id=<?= $d['id']; ?>" class="btn btn-sm btn-warning">Edit</a>
                             <a href="hapus_monitoring.php?id=<?= $d['id']; ?>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus data ini?')">Hapus</a>

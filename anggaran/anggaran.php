@@ -1,113 +1,207 @@
 <?php
 session_start();
-include 'db/koneksi.php'; // tetap di folder form_klepon/db
-
 if (!isset($_SESSION['username'])) {
-    header("Location: login.php");
+    header("Location: ../login.php");
     exit;
 }
-
-// pastikan koneksi ke db_form
-mysqli_select_db($conn, 'db_form');
-
-$data = mysqli_query($conn, "SELECT * FROM anggaran");
-if (!$data) {
-    die("Query Error: " . mysqli_error($conn));
-}
+$role = $_SESSION['role'];
+include '../db/koneksi.php';
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-    <title>Data Anggaran - Klepon</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Anggaran - SI Klepon</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         body {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #a8db74 0%, #7ed957 50%, #38b000 100%);
-            background-attachment: fixed;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f6f9;
         }
-        .table th, .table td { vertical-align: middle; }
-        .btn-success { background: #5eb639; border: none; color: #fff; }
-        .btn-success:hover { background: #38b000; color: #fff; }
-        .card, .table-responsive { background: rgba(255,255,255,0.95); border-radius: 18px; }
-        h3 { color: #2f8f00; font-weight: bold; letter-spacing: 1px; }
-        input#search { border-radius: 12px; }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 240px;
+            height: 100vh;
+            background-color: #1e1f26;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            z-index: 1000;
+        }
+        .sidebar .brand {
+            font-size: 20px;
+            font-weight: 600;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+        }
+        .sidebar .menu {
+            flex: 1;
+            padding: 15px 0;
+        }
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            color: #cfd3dc;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        .sidebar a:hover, .sidebar a.active {
+            background-color: #343a40;
+            color: #fff;
+        }
+        .logout {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding: 15px 20px;
+        }
+        .logout a {
+            color: #ff6b6b;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .main-content {
+            margin-left: 240px;
+            padding: 30px;
+        }
+        h2 {
+            font-weight: bold;
+            color: #333;
+        }
     </style>
 </head>
 <body>
 
-<div class="container mt-4">
-    <h3 class="mb-3 text-black">Data Anggaran</h3>
-
-    <div class="mb-3 d-flex gap-2">
-        <a href="menu.php" class="btn btn-secondary">Kembali</a>
-        <a href="anggaran_form.php" class="btn btn-success">Tambah Data</a>
+<!-- Sidebar -->
+<div class="sidebar">
+    <div>
+        <div class="brand">
+            <img src="../uploads/kle.png" alt="Logo SI-KLEPON" 
+                 style="width: 24px; height: 24px; vertical-align: middle; margin-right: 8px;">
+            SI-KLEPON
+        </div>
+        <div class="menu">
+            <a href="../menu.php"><i class="bi bi-house-door"></i> Dashboard</a>
+            <a href="../klepon/klepon.php"><i class="bi bi-folder2-open"></i> Monitoring SPJ</a>
+            <a href="anggaran.php" class="active"><i class="bi bi-cash-coin"></i> Anggaran</a>
+            <a href="../pengaturan.php" 
+                style="margin-top: 20px; border-top: 1px solid white; padding-top: 10px;">
+                <i class="bi bi-gear"></i> Pengaturan
+            </a>
+        </div>
     </div>
-
-    <input type="text" id="search" class="form-control mb-3" placeholder="Cari Program..." onkeyup="filterTable()">
-
-    <div class="table-responsive shadow">
-        <table class="table table-bordered table-striped align-middle" id="anggaranTable">
-            <thead class="table-dark text-center">
-                <tr>
-                    <th>No</th>
-                    <th>Kode Program</th>
-                    <th>Program</th>
-                    <th>Kode Kegiatan</th>
-                    <th>Kegiatan</th>
-                    <th>Kode KRO</th>
-                    <th>KRO</th>
-                    <th>Kode RO</th>
-                    <th>RO</th>
-                    <th>Kode Komponen</th>
-                    <th>Komponen</th>
-                    <th>Kode Subkomponen</th>
-                    <th>Nama Subkomponen</th>
-                    <th>Kode Akun</th>
-                    <th>Nama Akun</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php $no = 1; while ($d = mysqli_fetch_assoc($data)) : ?>
-                    <tr>
-                        <td><?= $no++; ?></td>
-                        <td><?= htmlspecialchars($d['kode_program'] ?? '-'); ?></td>
-                        <td><?= htmlspecialchars($d['program'] ?? '-'); ?></td>
-                        <td><?= htmlspecialchars($d['kode_kegiatan'] ?? '-'); ?></td>
-                        <td><?= htmlspecialchars($d['kegiatan'] ?? '-'); ?></td>
-                        <td><?= htmlspecialchars($d['kode_kro'] ?? '-'); ?></td>
-                        <td><?= htmlspecialchars($d['kro'] ?? '-'); ?></td>
-                        <td><?= htmlspecialchars($d['kode_ro'] ?? '-'); ?></td>
-                        <td><?= htmlspecialchars($d['ro'] ?? '-'); ?></td>
-                        <td><?= htmlspecialchars($d['kode_komponen'] ?? '-'); ?></td>
-                        <td><?= htmlspecialchars($d['komponen'] ?? '-'); ?></td>
-                        <td><?= htmlspecialchars($d['kode_subkomponen'] ?? '-'); ?></td>
-                        <td><?= htmlspecialchars($d['nama_subkomponen'] ?? '-'); ?></td>
-                        <td><?= htmlspecialchars($d['kode_akun'] ?? '-'); ?></td>
-                        <td><?= htmlspecialchars($d['nama_akun'] ?? '-'); ?></td>
-                        <td class="text-center">
-                            <a href="edit_anggaran.php?kode_program=<?= urlencode($d['kode_program']); ?>" class="btn btn-sm btn-warning">Edit</a>
-                            <a href="hapus_anggaran.php?kode_program=<?= urlencode($d['kode_program']); ?>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus data ini?');">Hapus</a>
-                        </td>
-                    </tr>
-                <?php endwhile; ?>
-            </tbody>
-        </table>
+    <div class="logout">
+        <span class="d-block mb-2">👋 Halo, <?= $_SESSION['nama']; ?> (<?= $_SESSION['role']; ?>)</span>
+        <a href="../logout.php"><i class="bi bi-box-arrow-right"></i> Logout</a>
     </div>
 </div>
 
-<script>
-function filterTable() {
-    const input = document.getElementById("search").value.toUpperCase();
-    const rows = document.querySelectorAll("#anggaranTable tbody tr");
-    rows.forEach(row => {
-        const cell = row.querySelector("td:nth-child(3)");
-        row.style.display = cell && cell.textContent.toUpperCase().includes(input) ? "" : "none";
-    });
-}
-</script>
+<!-- Main Content -->
+<div class="main-content">
+    <h3 class="mb-3 text-black">Data Anggaran</h3>
+
+    <?php if ($role == 'subbagian_umum' || $role == 'user'): ?>
+        <div class="mb-3 d-flex gap-2">
+            <a href="../menu.php" class="btn btn-secondary">Kembali ke Dashboard</a>
+        </div>
+    <?php endif; ?>
+
+    <input type="text" id="search" class="form-control mb-3" placeholder="Cari data anggaran..." onkeyup="filterTable()">
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-dark text-center">
+                        <tr>
+                            <th>No</th>
+                            <th>Kode Program</th>
+                            <th>Program</th>
+                            <th>Kode Kegiatan</th>
+                            <th>Kegiatan</th>
+                            <th>Kode KRO</th>
+                            <th>KRO</th>
+                            <th>Kode RO</th>
+                            <th>RO</th>
+                            <th>Kode Komponen</th>
+                            <th>Komponen</th>
+                            <th>Kode Subkomponen</th>
+                            <th>Nama Subkomponen</th>
+                            <th>Kode Akun</th>
+                            <th>Nama Akun</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        $no = 1;
+                        $query = mysqli_query($conn, "
+                            SELECT 
+                                `Kode Program` AS kode_program,
+                                `Program` AS program,
+                                `Kode Kegiatan` AS kode_kegiatan,
+                                `Kegiatan` AS kegiatan,
+                                `Kode KRO` AS kode_kro,
+                                `KRO` AS kro,
+                                `Kode RO` AS kode_ro,
+                                `RO` AS ro,
+                                `Kode Komponen` AS kode_komponen,
+                                `Komponen` AS komponen,
+                                `Kode Sub Komponen` AS kode_subkomponen,
+                                `Nama Sub Komponen` AS nama_subkomponen,
+                                `Kode Akun` AS kode_akun,
+                                `Nama Akun` AS nama_akun
+                            FROM anggaran
+                        ");
+                        
+                        if ($query && mysqli_num_rows($query) > 0) {
+                            while ($row = mysqli_fetch_assoc($query)) {
+                                echo "<tr>
+                                    <td class='text-center'>{$no}</td>
+                                    <td>{$row['kode_program']}</td>
+                                    <td>{$row['program']}</td>
+                                    <td>{$row['kode_kegiatan']}</td>
+                                    <td>{$row['kegiatan']}</td>
+                                    <td>{$row['kode_kro']}</td>
+                                    <td>{$row['kro']}</td>
+                                    <td>{$row['kode_ro']}</td>
+                                    <td>{$row['ro']}</td>
+                                    <td>{$row['kode_komponen']}</td>
+                                    <td>{$row['komponen']}</td>
+                                    <td>{$row['kode_subkomponen']}</td>
+                                    <td>{$row['nama_subkomponen']}</td>
+                                    <td>{$row['kode_akun']}</td>
+                                    <td>{$row['nama_akun']}</td>
+                                    <td class='text-center'>
+                                        <a href='edit_anggaran.php?id={$no}' class='btn btn-sm btn-warning'>
+                                            <i class='bi bi-pencil-square'></i>
+                                        </a>
+                                        <a href='hapus_anggaran.php?id={$no}' class='btn btn-sm btn-danger' onclick='return confirm(\"Hapus data ini?\");'>
+                                            <i class='bi bi-trash'></i>
+                                        </a>
+                                    </td>
+                                </tr>";
+                                $no++;
+                            }
+                        } else {
+                            echo "<tr><td colspan='16' class='text-center text-muted'>Belum ada data anggaran</td></tr>";
+                        }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>

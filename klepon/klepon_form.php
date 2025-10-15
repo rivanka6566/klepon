@@ -1,56 +1,143 @@
 <?php
 session_start();
 include '../db/koneksi.php';
-if (!isset($_SESSION['username']) || $_SESSION['role'] == 'admin_tabel') {
-    header("Location: login.php");
+if (!isset($_SESSION['username'])) {
+    header("Location: ../login.php");
     exit;
 }
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Form Pengajuan SI-KLEPON (Sistem Kelola SPJ Online)</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
     <style>
         body {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #a8db74ff 0%, #7ed957 50%, #38b000 100%);
-            background-attachment: fixed;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f6f9;
         }
-        .file-upload-section {
-            display: none;
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 240px;
+            height: 100vh;
+            background-color: #1e1f26;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
+
+        .sidebar .brand {
+            font-size: 20px;
+            font-weight: 600;
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+        }
+
+        .sidebar .brand img {
+            width: 24px;
+            height: 24px;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        .sidebar .menu {
+            flex: 1;
+            padding: 15px 0;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            color: #cfd3dc;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .sidebar a:hover, .sidebar a.active {
+            background-color: #343a40;
+            color: #fff;
+        }
+
+        .sidebar a i {
+            font-size: 18px;
+        }
+
+        .logout {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding: 15px 20px;
+        }
+
+        .logout a {
+            color: #ff6b6b;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 240px;
+            padding: 30px;
+        }
+
+        /* Form Elements */
+        .card, .form-control, .btn, .input-group-text {
+            border-radius: 0 !important;
+        }
+
         .card {
-            border-radius: 18px;
-            box-shadow: 0 4px 24px rgba(56, 176, 0, 0.15);
-            background: #fff;
-        }
-        h3 {
-            color: #38b000;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
-        .btn-success {
-            background: #5eb639ff;
-            border: none;
-            color: #fff;
-        }
-        .btn-success:hover {
-            background: #38b000;
-            color: #fff;
-        }
-        .btn-secondary {
-            border: none;
+            background-color: transparent !important;
+            box-shadow: none !important;
+            border: none !important;
         }
     </style>
 </head>
-<body class="bg-light">
-<div class="container mt-5">
-    <div class="card p-4 shadow-sm">
-        <h3>SI-KLEPON (Sistem Kelola SPJ Online)</h3>
-        <p>Upload SPJ 2025</p>
-        <form action="../proses_upload.php" method="POST" enctype="multipart/form-data">
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <div>
+        <div class="brand">
+            <img src="../uploads/kle.png" alt="Logo SI-KLEPON">
+            SI-KLEPON
+        </div>
+        <div class="menu">
+            <a href="../menu.php"><i class="bi bi-house-door"></i> Dashboard</a>
+            <a href="klepon.php" class="active"><i class="bi bi-folder2-open"></i> Monitoring SPJ</a>
+            <a href="../anggaran/anggaran.php"><i class="bi bi-cash-coin"></i> Anggaran</a>
+            <a href="../pengaturan.php" 
+                style="margin-top: 20px; border-top: 1px solid white; padding-top: 10px;">
+                <i class="bi bi-gear"></i> Pengaturan
+            </a>
+        </div>
+    </div>
+    <div class="logout">
+        <span class="d-block mb-2">👋 Halo, <?= $_SESSION['nama']; ?> (<?= $_SESSION['role']; ?>)</span>
+        <a href="../logout.php"><i class="bi bi-box-arrow-right"></i> Logout</a>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content">
+    <div class="container mt-4">
+        <div class="card p-4">
+            <h3>SI-KLEPON (Sistem Kelola SPJ Online)</h3>
+            <p>Upload SPJ 2025</p>
+            <form action="../proses_upload.php" method="POST" enctype="multipart/form-data">
 
             <div class="mb-3">
                 <label for="nama_spj" class="form-label">Tuliskan Nama SPJ yang akan dibuat (Contoh: Honor Pengelola Anggaran Bulan Januari 2025)</label>
