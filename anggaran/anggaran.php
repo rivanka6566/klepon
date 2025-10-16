@@ -77,11 +77,14 @@ include '../db/koneksi.php';
             font-weight: bold;
             color: #333;
         }
+<<<<<<< HEAD
         .table-scroll {
             max-height: 500px; /* atur tinggi area scroll */
             overflow-y: auto;  /* scroll vertikal */
             overflow-x: auto;  /* scroll horizontal jika kolom banyak */
         }
+=======
+>>>>>>> ca3ead8b8812baf1931442cd1e409aba9390593b
     </style>
 </head>
 <body>
@@ -96,8 +99,13 @@ include '../db/koneksi.php';
         </div>
         <div class="menu">
             <a href="../menu.php"><i class="bi bi-house-door"></i> Dashboard</a>
+<<<<<<< HEAD
             <a href="../klepon/klepon.php"><i class="bi bi-folder2-open"></i> Realisasi Anggaran</a>
             <a href="anggaran.php" class="active"><i class="bi bi-cash-coin"></i> Rencana Anggaran</a>
+=======
+            <a href="../klepon/klepon.php"><i class="bi bi-folder2-open"></i> Monitoring SPJ</a>
+            <a href="anggaran.php" class="active"><i class="bi bi-cash-coin"></i> Anggaran</a>
+>>>>>>> ca3ead8b8812baf1931442cd1e409aba9390593b
             <a href="../pengaturan.php" 
                 style="margin-top: 20px; border-top: 1px solid white; padding-top: 10px;">
                 <i class="bi bi-gear"></i> Pengaturan
@@ -105,7 +113,11 @@ include '../db/koneksi.php';
         </div>
     </div>
     <div class="logout">
+<<<<<<< HEAD
         <span class="d-block mb-2">👋 Halo, <?= $_SESSION['nama']; ?></span>
+=======
+        <span class="d-block mb-2">👋 Halo, <?= $_SESSION['nama']; ?> (<?= $_SESSION['role']; ?>)</span>
+>>>>>>> ca3ead8b8812baf1931442cd1e409aba9390593b
         <a href="../logout.php"><i class="bi bi-box-arrow-right"></i> Logout</a>
     </div>
 </div>
@@ -114,10 +126,16 @@ include '../db/koneksi.php';
 <div class="main-content">
     <h3 class="mb-3 text-black">Data Anggaran</h3>
 
+<<<<<<< HEAD
     <?php if ($role == 'admin_utama' || $role == 'user'): ?>
         <div class="mb-3 d-flex gap-2">
             <a href="../menu.php" class="btn btn-secondary">Kembali ke Dashboard</a>
             <a href="../anggaran/anggaran_form.php" class="btn btn-success">Anggaran Baru</a>
+=======
+    <?php if ($role == 'subbagian_umum' || $role == 'user'): ?>
+        <div class="mb-3 d-flex gap-2">
+            <a href="../menu.php" class="btn btn-secondary">Kembali ke Dashboard</a>
+>>>>>>> ca3ead8b8812baf1931442cd1e409aba9390593b
         </div>
     <?php endif; ?>
 
@@ -125,8 +143,13 @@ include '../db/koneksi.php';
 
     <div class="card shadow-sm">
         <div class="card-body">
+<<<<<<< HEAD
             <div class="table-responsive table-scroll">
                 <table class="table table-bordered table-hover align-middle mb-0">
+=======
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle">
+>>>>>>> ca3ead8b8812baf1931442cd1e409aba9390593b
                     <thead class="table-dark text-center">
                         <tr>
                             <th>No</th>
@@ -144,8 +167,11 @@ include '../db/koneksi.php';
                             <th>Nama Subkomponen</th>
                             <th>Kode Akun</th>
                             <th>Nama Akun</th>
+<<<<<<< HEAD
                             <th>Pagu</th>
                             <th>Jumlah Pagu</th>
+=======
+>>>>>>> ca3ead8b8812baf1931442cd1e409aba9390593b
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -189,12 +215,16 @@ include '../db/koneksi.php';
                                     <td>{$row['nama_subkomponen']}</td>
                                     <td>{$row['kode_akun']}</td>
                                     <td>{$row['nama_akun']}</td>
+<<<<<<< HEAD
                                     <td>    </td>
                                     <td>    </td>
                                     <td class='text-center'>
                                         <a href='?id={$no}' class='btn btn-sm btn-primary'> 
                                             <i class='bi bi-eye'></i>
                                         </a>
+=======
+                                    <td class='text-center'>
+>>>>>>> ca3ead8b8812baf1931442cd1e409aba9390593b
                                         <a href='edit_anggaran.php?id={$no}' class='btn btn-sm btn-warning'>
                                             <i class='bi bi-pencil-square'></i>
                                         </a>

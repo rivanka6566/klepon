@@ -200,6 +200,7 @@ $d = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM form_data WHERE id = 
 <div class="sidebar">
     <div>
         <div class="brand">
+<<<<<<< HEAD
             <img src="uploads/kle.png" alt="Logo SI-KLEPON" 
                  style="width: 24px; height: 24px; vertical-align: middle; margin-right: 8px;">
             SI-KLEPON
@@ -217,6 +218,22 @@ $d = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM form_data WHERE id = 
     <div class="logout">
         <span class="d-block mb-2">👋 Halo, <?= $_SESSION['nama']; ?></span>
         <a href="logout.php"><i class="bi bi-box-arrow-right"></i> Logout</a>
+=======
+            <img src="../uploads/kle.png" alt="Logo SI-KLEPON" style="width:24px;height:24px;vertical-align:middle;margin-right:8px;">
+            SI-KLEPON
+        </div>
+        <div class="menu">
+            <a href="../menu.php"><i class="bi bi-house-door"></i> Dashboard</a>
+            <a href="klepon.php" class="active"><i class="bi bi-folder2-open"></i> Monitoring SPJ</a>
+            <a href="klepon_form.php"><i class="bi bi-upload"></i> Upload SPJ</a>
+            <a href="../anggaran/anggaran.php"><i class="bi bi-cash-coin"></i> Anggaran</a>
+            <a href="../pengaturan.php" style="margin-top:20px;border-top:1px solid white;padding-top:10px;"><i class="bi bi-gear"></i> Pengaturan</a>
+        </div>
+    </div>
+    <div class="logout">
+        <span class="d-block mb-2">👋 Halo, <?= htmlspecialchars($_SESSION['nama'] ?? $_SESSION['username']); ?> (<?= htmlspecialchars($_SESSION['role'] ?? '') ?>)</span>
+        <a href="../logout.php"><i class="bi bi-box-arrow-right"></i> Logout</a>
+>>>>>>> ca3ead8b8812baf1931442cd1e409aba9390593b
     </div>
 </div>
 

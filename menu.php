@@ -103,8 +103,13 @@ if (!isset($_SESSION['username'])) {
         </div>
         <div class="menu">
             <a href="menu.php" class="active"><i class="bi bi-house-door"></i> Dashboard</a>
+<<<<<<< HEAD
             <a href="klepon/klepon.php"><i class="bi bi-folder2-open"></i> Realisasi </a>
             <a href="anggaran/anggaran.php"><i class="bi bi-cash-coin"></i> Rencana Anggaran </a>
+=======
+            <a href="klepon/klepon.php"><i class="bi bi-folder2-open"></i> Monitoring SPJ</a>
+            <a href="anggaran/anggaran.php"><i class="bi bi-cash-coin"></i> Anggaran</a>
+>>>>>>> ca3ead8b8812baf1931442cd1e409aba9390593b
             <a href="pengaturan.php" 
                 style="margin-top: 20px; border-top: 1px solid white; padding-top: 10px;">
                 <i class="bi bi-gear"></i> Pengaturan
@@ -112,7 +117,11 @@ if (!isset($_SESSION['username'])) {
         </div>
     </div>
     <div class="logout">
+<<<<<<< HEAD
         <span class="d-block mb-2">👋 Halo, <?= $_SESSION['nama']; ?></span>
+=======
+        <span class="d-block mb-2">👋 Halo, <?= $_SESSION['nama']; ?> (<?= $_SESSION['role']; ?>)</span>
+>>>>>>> ca3ead8b8812baf1931442cd1e409aba9390593b
         <a href="logout.php"><i class="bi bi-box-arrow-right"></i> Logout</a>
     </div>
 </div>
